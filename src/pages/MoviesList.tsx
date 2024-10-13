@@ -74,7 +74,7 @@ const MoviesList = () => {
               {/* <p>"page count:" {Math.ceil(totalResults / 10)}</p>
               <p>"page number:" {pageNumber}</p> */}
 
-              <div className="px-10">
+              <div className="px-2">
                 <ReactPaginate
                   breakLabel="..."
                   previousLabel={null}
@@ -87,6 +87,8 @@ const MoviesList = () => {
                   pageCount={Math.ceil(totalResults / 10)}
                   renderOnZeroPageCount={null}
                   className="paginator"
+                  pageRangeDisplayed={2}
+                  marginPagesDisplayed={2}
                 />
               </div>
             </>
