@@ -74,19 +74,21 @@ const MoviesList = () => {
               {/* <p>"page count:" {Math.ceil(totalResults / 10)}</p>
               <p>"page number:" {pageNumber}</p> */}
 
-              <ReactPaginate
-                breakLabel="..."
-                previousLabel={null}
-                nextLabel={null}
-                onPageChange={(e) => {
-                  //   console.log(e);
-                  setPageNumber(e.selected + 1);
-                }}
-                forcePage={pageNumber - 1}
-                pageCount={Math.ceil(totalResults / 10)}
-                renderOnZeroPageCount={null}
-                className="paginator"
-              />
+              <div className="px-10">
+                <ReactPaginate
+                  breakLabel="..."
+                  previousLabel={null}
+                  nextLabel={null}
+                  onPageChange={(e) => {
+                    //   console.log(e);
+                    setPageNumber(e.selected + 1);
+                  }}
+                  forcePage={pageNumber - 1}
+                  pageCount={Math.ceil(totalResults / 10)}
+                  renderOnZeroPageCount={null}
+                  className="paginator"
+                />
+              </div>
             </>
           )}
 

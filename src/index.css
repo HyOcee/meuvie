@@ -165,7 +165,7 @@ body {
 
 /* paginator */
 .paginator {
-  @apply bg-[#2C3440]  font-bold mt-4 flex overflow-auto px-8 py-2 justify-center gap-4;
+  @apply font-bold mt-4 flex overflow-auto px-4 rounded-md py-2 justify-center gap-4;
 }
 
 .paginator li {
