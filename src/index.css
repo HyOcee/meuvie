@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #14181c;
+}
+
+body {
+  min-width: 320px;
+}
+
+.wx {
+  @apply px-4 md:px-10 lg:px-14 xl:px-[15%];
+}
+
+.button-primary {
+  @apply bg-[#00ac1c] hover:bg-[#009d1a] rounded-md px-5 py-3 text-white;
+}
+
+.banner-container {
+  @apply relative h-[60vh] min-h-[350px] bg-no-repeat;
+
+  background-position: center 0px;
+}
+
+.movie-details-grid {
+  display: grid;
+  gap: 28px 16px;
+  grid-template-areas:
+    "title title poster"
+    "other other other";
+}
+
+@media screen and (min-width: 768px) {
+  .movie-details-grid {
+    display: grid;
+    gap: 20px 28px;
+    grid-template-areas:
+      "poster title title"
+      "poster other other";
+  }
+}
+
+.movie-details-grid .title-holder {
+  grid-area: title;
+}
+
+.movie-details-grid .poster-image-holder {
+  grid-area: poster;
+}
+
+.movie-details-grid .other-details-holder {
+  grid-area: other;
+}
+
+.input-label-holder {
+  @apply flex flex-col md:flex-row md:items-center gap-y-2 gap-x-6;
+}
+
+.input-label-holder p {
+  @apply w-[120px] text-grey-header;
+}
+
+.input-label-holder input {
+  @apply outline-0 bg-transparent focus:border-grey-header border border-grey-body rounded-md px-4 py-3 flex-1;
+}
+
+.glitch {
+  position: relative;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  letter-spacing: 5px;
+  z-index: 1;
+}
+
+.glitch:before,
+.glitch:after {
+  display: block;
+  content: attr(data-glitch);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+}
+
+.glitch:before {
+  animation: glitch-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+    infinite;
+  color: #0ff;
+  z-index: -1;
+}
+
+.glitch:after {
+  animation: glitch-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both
+    infinite;
+  color: #ff00ff;
+  z-index: -2;
+}
+
+@keyframes glitch-color {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-3px, 3px);
+  }
+
+  40% {
+    transform: translate(-3px, -3px);
+  }
+
+  60% {
+    transform: translate(3px, 3px);
+  }
+
+  80% {
+    transform: translate(3px, -3px);
+  }
+
+  to {
+    transform: translate(0);
+  }
+}
+
+/* loading animation */
+.loader {
+  width: 44.8px;
+  height: 44.8px;
+  color: #456;
+  background: linear-gradient(currentColor 0 0),
+    linear-gradient(currentColor 0 0), linear-gradient(currentColor 0 0),
+    linear-gradient(currentColor 0 0);
+  background-size: 23.4px 23.4px;
+  background-repeat: no-repeat;
+  animation: shapes-53h9rpmd 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+}
+
+@keyframes shapes-53h9rpmd {
+  0% {
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  }
+
+  33% {
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    width: 67.2px;
+    height: 67.2px;
+  }
+
+  66% {
+    background-position: 100% 0, 100% 100%, 0 100%, 0 0;
+    width: 67.2px;
+    height: 67.2px;
+  }
+
+  100% {
+    background-position: 100% 0, 100% 100%, 0 100%, 0 0;
+  }
+}
+
+/* paginator */
+.paginator {
+  @apply bg-[#2C3440]  font-bold mt-4 flex overflow-auto px-8 py-2 justify-center gap-4;
+}
+
+.paginator li {
+  @apply px-3 py-1 rounded-md cursor-pointer;
+}
+
+.paginator li.selected {
+  @apply cursor-not-allowed bg-grey-header text-[#14181c];
+}
+
+.paginator li.previous,
+.paginator li.next {
+  @apply hidden;
+}
