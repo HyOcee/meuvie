@@ -1,39 +1,24 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import MovieCard from "../components/MovieCard";
 import Modal from "../components/Modal";
-import SearchIcon from "/search.svg";
 import { useAppDispatch, useAppSelector } from "../hooks/movie-hooks";
 import { fetchMovies } from "../store/movies-slice";
 import Loader from "../components/Loader";
 import useQueryParams from "../hooks/useQueryParams";
 import ReactPaginate from "react-paginate";
-
-function useDebounce<
-  F extends (...args: Parameters<F>) => void | Promise<void>
->(callback: F, delay: number = 1000) {
-  const timeoutId = useRef<number | undefined>();
-
-  const debounceCallbackFn = useCallback(
-    (...args: Parameters<F>) => {
-      clearTimeout(timeoutId?.current);
-      timeoutId.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-
-      return () => clearTimeout(timeoutId?.current);
-    },
-    [callback, delay]
-  );
-
-  return debounceCallbackFn;
-}
+import SearchInput from "../components/SearchInput";
+import { useDebounce } from "../hooks/useDebounce";
 
 const MoviesList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { title, setTitle, pageNumber, pageSize, setPageNumber } =
     useQueryParams();
   const [searchInputValue, setSearchInputValue] = useState(title);
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    return JSON.parse(sessionStorage.getItem("searchHistory") || "[]");
+  });
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
 
   const dispatch = useAppDispatch();
   const { movies, moviesError, moviesLoading, totalResults } = useAppSelector(
@@ -42,6 +27,12 @@ const MoviesList = () => {
 
   const debounce = useDebounce((searchInputValue: string) => {
     setTitle(searchInputValue);
+
+    if (!searchHistory.includes(searchInputValue) && searchInputValue?.length) {
+      const updatedHistory = [...searchHistory, searchInputValue];
+      setSearchHistory(updatedHistory);
+      sessionStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+    }
   }, 500);
 
   useEffect(() => {
@@ -54,6 +45,23 @@ const MoviesList = () => {
     );
   }, [pageNumber, pageSize, title, dispatch]);
 
+  const handleInputChange = (val: string) => {
+    setSearchInputValue(val);
+    debounce(val);
+
+    const filtered = searchHistory.filter((query) =>
+      query.toLowerCase().startsWith(val.toLowerCase())
+    );
+    console.log({ filtered });
+    setFilteredSuggestions(filtered);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchInputValue(suggestion);
+    setTitle(suggestion);
+    // setFilteredSuggestions([]); // Hide suggestions after selection
+  };
+
   return (
     <>
       <Header addNewMovie={() => setIsModalOpen(true)} />
@@ -62,27 +70,15 @@ const MoviesList = () => {
         <div className="flex flex-wrap gap-3 pb-5 items-center border-b border-b-grey-line justify-between">
           <h6 className="text-grey-header font-bold text-lg ">My List</h6>
 
-          <div className="relative">
-            <img
-              src={SearchIcon}
-              alt="Search Icon"
-              className="w-[18px] absolute left-3 top-3"
-            />
-            <input
-              type="text"
-              className="bg-transparent border-grey-line text-grey-header border rounded-md pl-9 pr-3 py-2 placeholder:text-sm outline-0 focus:border-grey-header"
-              placeholder="Search Movie"
-              value={searchInputValue}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                const value = event.target.value;
-                setSearchInputValue(event.target.value);
-                debounce(value);
-              }}
-            />
-          </div>
+          <SearchInput
+            inputValue={searchInputValue}
+            onInputChange={handleInputChange}
+            onSuggestionClick={handleSuggestionClick}
+            suggestions={filteredSuggestions}
+          />
         </div>
 
-        <div className="min-h-[400px]">
+        <div className="min-h-[300px] md:min-h-[400px]">
           {/* movies list */}
           {!moviesLoading && (
             <>
@@ -96,16 +92,12 @@ const MoviesList = () => {
                 />
               ))}
 
-              {/* <p>"page count:" {Math.ceil(totalResults / 10)}</p>
-              <p>"page number:" {pageNumber}</p> */}
-
               <div className="px-2">
                 <ReactPaginate
                   breakLabel="..."
                   previousLabel={null}
                   nextLabel={null}
                   onPageChange={(e) => {
-                    //   console.log(e);
                     setPageNumber(e.selected + 1);
                   }}
                   forcePage={pageNumber - 1}
@@ -124,7 +116,7 @@ const MoviesList = () => {
 
           {/* error loading movies */}
           {!moviesLoading && moviesError && (
-            <div className="flex flex-col items-center justify-center text-center h-[400px] wx gap-4">
+            <div className="flex flex-col items-center justify-center text-center h-[200px] md:h-[400px] wx gap-4">
               <h1
                 className="text-grey-header font-bold text-4xl 
               "
