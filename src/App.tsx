@@ -13,7 +13,6 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<MoviesList />} />
             <Route path="/movie-details/:id" element={<MovieDetails />} />
-            {/* <Route path="*" element={<NoPage />} /> */}
           </Route>
         </Routes>
       </Provider>

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import MovieCard from "../components/MovieCard";
 import Modal from "../components/Modal";
@@ -9,16 +9,40 @@ import Loader from "../components/Loader";
 import useQueryParams from "../hooks/useQueryParams";
 import ReactPaginate from "react-paginate";
 
+function useDebounce<
+  F extends (...args: Parameters<F>) => void | Promise<void>
+>(callback: F, delay: number = 1000) {
+  const timeoutId = useRef<number | undefined>();
+
+  const debounceCallbackFn = useCallback(
+    (...args: Parameters<F>) => {
+      clearTimeout(timeoutId?.current);
+      timeoutId.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+
+      return () => clearTimeout(timeoutId?.current);
+    },
+    [callback, delay]
+  );
+
+  return debounceCallbackFn;
+}
+
 const MoviesList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const { title, setTitle, pageNumber, pageSize, setPageNumber } =
     useQueryParams();
+  const [searchInputValue, setSearchInputValue] = useState(title);
 
   const dispatch = useAppDispatch();
   const { movies, moviesError, moviesLoading, totalResults } = useAppSelector(
     (state) => state.movies
   );
+
+  const debounce = useDebounce((searchInputValue: string) => {
+    setTitle(searchInputValue);
+  }, 500);
 
   useEffect(() => {
     dispatch(
@@ -48,10 +72,11 @@ const MoviesList = () => {
               type="text"
               className="bg-transparent border-grey-line text-grey-header border rounded-md pl-9 pr-3 py-2 placeholder:text-sm outline-0 focus:border-grey-header"
               placeholder="Search Movie"
-              value={title}
+              value={searchInputValue}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                setPageNumber(1);
-                setTitle(event.target.value);
+                const value = event.target.value;
+                setSearchInputValue(event.target.value);
+                debounce(value);
               }}
             />
           </div>

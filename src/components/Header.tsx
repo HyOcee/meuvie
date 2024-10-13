@@ -8,9 +8,6 @@ const Header = ({ addNewMovie }: { addNewMovie: () => void }) => {
       }}
       className="wx banner-container"
     >
-      {/* <img src={BannerImg} alt="Banner Image" /> */}
-      {/* <img src={Logo} alt="Banner Image" /> */}
-
       <div className="pb-5 absolute bottom-0 w-full left-0 flex flex-col gap-6 items-center">
         <h2 className="text-white text-xl xs:text-2xl md:text-3xl text-center">
           Track movies you've watched. <br />

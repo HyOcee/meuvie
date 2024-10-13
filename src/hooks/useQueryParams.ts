@@ -39,6 +39,7 @@ export default function useQueryParams() {
 
   const setTitle = (title: string) => {
     searchParams.set("search", title);
+    searchParams.set("page", "1");
     setSearchParams(searchParams);
   };
 
