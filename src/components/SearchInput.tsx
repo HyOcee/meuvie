@@ -19,7 +19,6 @@ const SearchInput = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log({ event });
       if (
         suggestionsContainerRef.current &&
         !suggestionsContainerRef.current.contains(

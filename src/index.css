@@ -20,6 +20,10 @@ body {
   @apply bg-[#00ac1c] hover:bg-[#009d1a] rounded-md px-5 py-3 text-white;
 }
 
+.button-primary:disabled {
+  @apply bg-grey-header;
+}
+
 .banner-container {
   @apply relative h-[60vh] min-h-[350px] bg-no-repeat;
 
@@ -132,7 +136,7 @@ body {
 .loader {
   width: 44.8px;
   height: 44.8px;
-  color: #456;
+  color: #678;
   background: linear-gradient(currentColor 0 0),
     linear-gradient(currentColor 0 0), linear-gradient(currentColor 0 0),
     linear-gradient(currentColor 0 0);
